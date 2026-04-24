@@ -1,0 +1,51 @@
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 忽略上传的文档文件
+*.pdf
+*.docx
+*.txt
+*.md
+!README.md          # 保留 README.md
+!requirements.txt   # 保留 requirements.txt
+venv/
+.venv/
+*.log
+*.pyc
+__pycache__/
+# 用户上传的文件目录
+uploads/
+
+.env.*
+
+.idea/
+*.iml
+.vscode/
+
+# Python缓存
+
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# 虚拟环境
+
+env/
+ENV/
+
+
+
+# IDE配置
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Streamlit配置
+.streamlit/secrets.toml
+
+# Git自己的
+.git/
