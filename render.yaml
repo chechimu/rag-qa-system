@@ -13,10 +13,6 @@ services:
         generateValue: true
       - key: POSTGRES_DB
         value: rag_qa
-    disk:
-      name: postgres-data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 1
 
   # Redis 缓存 (Render 托管)
   - type: pserv
@@ -25,10 +21,6 @@ services:
     plan: free
     image:
       url: redis:7-alpine
-    disk:
-      name: redis-data
-      mountPath: /data
-      sizeGB: 1
 
   # FastAPI 后端服务
   - type: web
@@ -50,7 +42,7 @@ services:
         fromService:
           name: rag-postgres
           type: pserv
-          property: envVars.POSTGRES_PASSWORD
+          property: hostport
       - key: POSTGRES_DB
         value: rag_qa
       - key: REDIS_HOST
@@ -77,11 +69,7 @@ services:
       - key: LLM_TIMEOUT
         value: 60
       - key: UPLOAD_DIR
-        value: /app/uploads
-    disk:
-      name: uploads
-      mountPath: /app/uploads
-      sizeGB: 1
+        value: /tmp/uploads
     healthCheckPath: /health
 
   # Streamlit 前端服务
@@ -92,7 +80,4 @@ services:
     dockerfilePath: ./Dockerfile.streamlit
     envVars:
       - key: API_BASE_URL
-        fromService:
-          name: rag-api
-          type: web
-          property: url
+        value: https://rag-api.onrender.com
