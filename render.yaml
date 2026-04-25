@@ -1,0 +1,38 @@
+services:
+  # 后端API服务
+  - type: web
+    name: backend
+    env: docker
+    dockerCompose:
+      service: backend
+    region: oregon
+    plan: free
+    envVars:
+      - key: SILICONFLOW_API_KEY
+        sync: false
+
+  # 前端Streamlit服务
+  - type: web
+    name: frontend
+    env: docker
+    dockerCompose:
+      service: frontend
+    region: oregon
+    plan: free
+    ports:
+      - 8501
+
+  # 带PGVector的PostgreSQL数据库
+  - type: postgres
+    name: db
+    image: pgvector/pgvector:pg16
+    region: oregon
+    plan: free
+    ipAllowList: []
+    envVars:
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        value: postgres
+      - key: POSTGRES_DB
+        value: rag_db
