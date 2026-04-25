@@ -22,17 +22,14 @@ services:
     ports:
       - 8501
 
-  # 带PGVector的PostgreSQL数据库
-  - type: postgres
+  # 带PGVector的PostgreSQL数据库（用Docker自己跑，不用Render的托管服务）
+  - type: web
     name: db
-    image: pgvector/pgvector:pg16
+    env: docker
+    dockerCompose:
+      service: db
     region: oregon
     plan: free
+    ports:
+      - 5432
     ipAllowList: []
-    envVars:
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        value: postgres
-      - key: POSTGRES_DB
-        value: rag_db
