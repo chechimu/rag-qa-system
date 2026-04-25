@@ -2,10 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# 先装系统依赖
-RUN apt-get update && apt-get install -y libxml2 libxslt1-dev zlib1g-dev
-
-# 复制并安装依赖
+# 安装依赖
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

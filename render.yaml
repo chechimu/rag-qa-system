@@ -1,10 +1,100 @@
-# 直接让Render加载你现有的docker-compose.yml，不用改任何东西
-dockerCompose:
-  path: ./docker-compose.yml
-
-# 只需要给后端服务注入你的API Key就行
 services:
-  backend:
+  # PostgreSQL 数据库 (Render 托管)
+  - type: pserv
+    name: rag-postgres
+    runtime: docker
+    plan: free
+    env: docker
+    dockerfilePath: ./Dockerfile.postgres
     envVars:
-      - key: SILICONFLOW_API_KEY
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: rag_qa
+    disk:
+      name: postgres-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+
+  # Redis 缓存 (Render 托管)
+  - type: pserv
+    name: rag-redis
+    runtime: docker
+    plan: free
+    image:
+      url: redis:7-alpine
+    disk:
+      name: redis-data
+      mountPath: /data
+      sizeGB: 1
+
+  # FastAPI 后端服务
+  - type: web
+    name: rag-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: POSTGRES_HOST
+        fromService:
+          name: rag-postgres
+          type: pserv
+          property: host
+      - key: POSTGRES_PORT
+        value: 5432
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        fromService:
+          name: rag-postgres
+          type: pserv
+          property: envVars.POSTGRES_PASSWORD
+      - key: POSTGRES_DB
+        value: rag_qa
+      - key: REDIS_HOST
+        fromService:
+          name: rag-redis
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        value: 6379
+      - key: SECRET_KEY
+        generateValue: true
+      - key: LLM_API_KEY
         sync: false
+      - key: LLM_BASE_URL
+        value: https://api.siliconflow.cn/v1
+      - key: LLM_MODEL
+        value: Qwen/Qwen2.5-7B-Instruct
+      - key: EMBEDDING_API_KEY
+        sync: false
+      - key: EMBEDDING_BASE_URL
+        value: https://api.siliconflow.cn/v1
+      - key: EMBEDDING_MODEL
+        value: BAAI/bge-m3
+      - key: LLM_TIMEOUT
+        value: 60
+      - key: UPLOAD_DIR
+        value: /app/uploads
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 1
+    healthCheckPath: /health
+
+  # Streamlit 前端服务
+  - type: web
+    name: rag-streamlit
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.streamlit
+    envVars:
+      - key: API_BASE_URL
+        fromService:
+          name: rag-api
+          type: web
+          property: url
+    dependsOn:
+      - rag-api
