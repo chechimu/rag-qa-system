@@ -1,35 +1,10 @@
+# 直接让Render加载你现有的docker-compose.yml，不用改任何东西
+dockerCompose:
+  path: ./docker-compose.yml
+
+# 只需要给后端服务注入你的API Key就行
 services:
-  # 后端API服务
-  - type: web
-    name: backend
-    env: docker
-    dockerCompose:
-      service: backend
-    region: oregon
-    plan: free
+  backend:
     envVars:
       - key: SILICONFLOW_API_KEY
         sync: false
-
-  # 前端Streamlit服务
-  - type: web
-    name: frontend
-    env: docker
-    dockerCompose:
-      service: frontend
-    region: oregon
-    plan: free
-    ports:
-      - 8501
-
-  # 带PGVector的PostgreSQL数据库（用Docker自己跑，不用Render的托管服务）
-  - type: web
-    name: db
-    env: docker
-    dockerCompose:
-      service: db
-    region: oregon
-    plan: free
-    ports:
-      - 5432
-    ipAllowList: []
