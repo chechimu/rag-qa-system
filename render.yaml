@@ -1,27 +1,4 @@
 services:
-  # PostgreSQL 数据库 (Render 托管)
-  - type: pserv
-    name: rag-postgres
-    runtime: docker
-    plan: free
-    env: docker
-    dockerfilePath: ./Dockerfile.postgres
-    envVars:
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: rag_qa
-
-  # Redis 缓存 (Render 托管)
-  - type: pserv
-    name: rag-redis
-    runtime: docker
-    plan: free
-    image:
-      url: redis:7-alpine
-
   # FastAPI 后端服务
   - type: web
     name: rag-api
@@ -29,41 +6,9 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     envVars:
-      - key: POSTGRES_HOST
-        fromService:
-          name: rag-postgres
-          type: pserv
-          property: host
-      - key: POSTGRES_PORT
-        value: 5432
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        fromService:
-          name: rag-postgres
-          type: pserv
-          property: hostport
-      - key: POSTGRES_DB
-        value: rag_qa
-      - key: REDIS_HOST
-        fromService:
-          name: rag-redis
-          type: pserv
-          property: host
-      - key: REDIS_PORT
-        value: 6379
-      - key: SECRET_KEY
-        generateValue: true
-      - key: LLM_API_KEY
-        value: sk-your-siliconflow-key-here
-      - key: LLM_BASE_URL
-        value: https://api.siliconflow.cn/v1
+      # 只保留不敏感的配置
       - key: LLM_MODEL
         value: Qwen/Qwen2.5-7B-Instruct
-      - key: EMBEDDING_API_KEY
-        value: sk-your-siliconflow-key-here
-      - key: EMBEDDING_BASE_URL
-        value: https://api.siliconflow.cn/v1
       - key: EMBEDDING_MODEL
         value: BAAI/bge-m3
       - key: LLM_TIMEOUT
