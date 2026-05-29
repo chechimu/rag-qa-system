@@ -4,8 +4,7 @@
 
 ## 项目链接
 
-- **GitHub**: [https://github.com/yourusername/rag-qa-system](https://github.com/yourusername/rag-qa-system)（请替换为你的实际仓库地址）
-- **在线演示**: [http://your-demo-link.com](http://your-demo-link.com)（推荐部署方案见下方）
+- **GitHub**: [https://github.com/chechimu/rag-qa-system](https://github.com/chechimu/rag-qa-system)
 
 ## 项目介绍
 
@@ -290,41 +289,7 @@ documents = await db.execute(
 - 🚀 **流式输出**：SSE 实时返回生成结果
 - 📊 **监控指标**：健康检查、使用统计
 
-## 快速开始
 
-### 1. 配置环境变量
-
-```bash
-cp .env.example .env
-# 编辑 .env 文件，填入你的 API 密钥
-```
-
-### 2. 启动服务
-
-```bash
-docker-compose up -d
-```
-
-### 3. 访问服务
-
-- API 文档: http://localhost:8000/docs
-- 前端界面: http://localhost:8501
-
-## 项目结构
-
-```
-.
-├── app/
-│   ├── api/routes/      # API 路由
-│   ├── core/            # 配置、限流
-│   ├── db/              # 数据库连接
-│   ├── models/          # 数据模型
-│   ├── services/        # 业务逻辑
-│   └── main.py          # 应用入口
-├── scripts/             # 工具脚本
-├── docker-compose.yml   # Docker 编排
-└── README.md
-```
 
 ## 优化记录
 
@@ -353,66 +318,4 @@ docker-compose up -d
 | `POSTGRES_*`        | 数据库配置         | 见 .env |
 | `REDIS_*`           | Redis 配置         | 见 .env |
 
-## 在线演示部署方案
 
-### 🆓 方案一：Render 免费部署（推荐）
-
-**零成本、一键部署、自动 HTTPS**
-
-已为你配置好 `render.yaml`，支持一键部署：
-
-```bash
-# 1. 推送代码到 GitHub
-git push origin main
-
-# 2. 登录 Render → New + → Blueprint → 选择仓库
-# 3. 填入 API 密钥，等待 5 分钟
-# 4. 访问 https://rag-streamlit.onrender.com
-```
-
-**详细步骤**：见 [RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
-
-**免费版限制**：
-
-| 限制     | 说明             | 解决方案              |
-| -------- | ---------------- | --------------------- |
-| 服务休眠 | 15分钟无访问休眠 | UptimeRobot 定时 ping |
-| 带宽     | 100GB/月         | 足够演示              |
-| 内存     | 512MB            | 精简服务可用          |
-
----
-
-### 方案二：云服务器部署
-
-适合：有域名、需要长期稳定运行
-
-| 平台           | 配置建议       | 费用      | 步骤                                                         |
-| -------------- | -------------- | --------- | ------------------------------------------------------------ |
-| **阿里云 ECS** | 2核4G + 5M带宽 | ~200元/月 | 1. 购买服务器<br>2. 安装 Docker<br>3. 克隆仓库 + 配置 .env<br>4. `docker-compose up -d`<br>5. 域名解析 + Nginx 反向代理 |
-| **腾讯云轻量** | 2核4G + 6M带宽 | ~80元/月  | 同上                                                         |
-
----
-
-### 方案三：内网穿透（临时演示）
-
-```bash
-# 使用 ngrok 临时暴露
-ngrok http 8501
-# 会生成 https://xxx.ngrok.io 链接，24小时有效
-```
-
----
-
-### 方案对比
-
-| 方案       | 成本     | 稳定性 | 部署难度 | 适合场景          |
-| ---------- | -------- | ------ | -------- | ----------------- |
-| **Render** | **免费** | 中     | ⭐ 最简单 | **面试演示、MVP** |
-| 云服务器   | ~80元/月 | 高     | ⭐⭐⭐      | 正式产品          |
-| 内网穿透   | 免费     | 低     | ⭐⭐       | 临时测试          |
-
-**面试推荐**：直接用 **Render 免费版**，5 分钟上线，自带 HTTPS 域名
-
-## 许可证
-
-MIT
